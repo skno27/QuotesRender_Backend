@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  username String    @unique
+  name     String
+  password Password?
+  verified Boolean   @default(true)
+  email2fa Boolean   @default(false)
+
+  quotes      Quote[]
+  comments    Comment[]
+  quotesLiked Quote[]   @relation("QuoteLikes")
+
+  roles Roles[]
+}
+
+model Password {
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
+  hash   String
+  user   User   @relation(fields: userId, references: id, onDelete: Cascade)
+}
+
+enum Roles {
+  ADMIN
+}
+
+enum Color {
+  RED
+  GREEN
+  BLUE
+  YELLOW
+  ORANGE
+  PURPLE
+  BLACK
+  WHITE
+}
+
+model Author {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique
+  authorQuotes Quote[]
+}
+
+model Quote {
+  id        Int      @id @default(autoincrement())
+  body      String
+  color     Color
+  createdAt DateTime @default(now())
+  userId    Int
+  authorId  Int?
+
+  uploader User    @relation(fields: [userId], references: [id])
+  author   Author? @relation(fields: [authorId], references: [id])
+
+  tags     Tag[]
+  comments Comment[]
+  likes    User[]    @relation("QuoteLikes")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  quoteId   Int
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  author User  @relation(fields: [userId], references: [id])
+  quote  Quote @relation(fields: [quoteId], references: [id])
+}
+
+model Tag {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  quotes Quote[]
+}

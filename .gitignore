@@ -1,0 +1,18 @@
+node_modules
+# Keep environment variables out of version control
+.env
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+dist
+
+.DS_Store
+src/seed.ts
+admin
+admin/seed.ts
+
+.ebignore
+
+# not deploying to elasticbeanstalk
+deploy.sh
