@@ -20,18 +20,26 @@ app.use(express.json()); // express json data processing protocols
 
 // configure cors
 const corsOptions = {
-  origin: "quotesocial.com",
-  methods: "GET, POST, PATCH, DELETE",
+  // origin: ["quotesocial.com", "http://localhost:5173"],
+  // origin: "*",
+  origin: "https://quotesfrontend-imk9.onrender.com",
   credentials: true,
+  methods: "GET, POST, PATCH, DELETE",
   optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
 
+// debug
+app.use((req, res, next) => {
+  console.log(`Incoming request origin: ${req.headers.origin}`);
+  next();
+});
+
 app.use(xss); // sanitize everything !
 app.use(logging.logRequest); // custom logging
 
-app.use(cacheMiddleware);
+// app.use(cacheMiddleware);
 
 // call base route for testing connection
 app.get("/", (req, res) => {

@@ -4,7 +4,15 @@ import prisma from "../prisma.js";
 // Fetch all quotes
 export const getQuotes: RequestHandler = async (req, res) => {
   try {
-    const quotes = await prisma.quote.findMany();
+    const quotes = await prisma.quote.findMany({
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
     res.json({ quotes });
   } catch (error) {
     console.error("Error fetching quotes:", error);
@@ -48,6 +56,7 @@ export const getQuote: RequestHandler = async (req, res, next) => {
     const quoteId = Number.parseInt(req.params.id);
     const quote = await prisma.quote.findUnique({
       where: { id: quoteId },
+      include: { author: true },
     });
 
     if (!quote) {
@@ -88,7 +97,7 @@ export const deleteQuote: RequestHandler = async (req, res) => {
     });
 
     console.log(`Quote Deleted...`);
-    res.sendStatus(200).json(result);
+    res.send(200).json(result);
   } catch (error) {
     console.error("Error deleting quote:", error);
     res.status(500).json({ error: "Failed to delete quote" });

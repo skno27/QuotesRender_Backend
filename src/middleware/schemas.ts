@@ -72,7 +72,6 @@ export const Quote = z.object({
   id: z.number().int().nonnegative().optional(),
   body: z.string().min(2),
   color: z.nativeEnum(Color),
-  date: z.date().optional(),
   createdAt: z.date().optional(),
   userId: z.number().int().nonnegative().optional(),
   tags: z.string().array().optional(),
